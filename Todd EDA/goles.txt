@@ -1,0 +1,7 @@
+Big picture:
+- I want to be able to predict missing composition data based on other fields in the time series data.
+- I want to know what and how much data is missing. Are there large continuous chunks missing?
+
+- PCA on the furnace data
+    - I think that most of the data will be kept with only one or two components
+
