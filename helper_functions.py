@@ -46,6 +46,6 @@ def plot_all_fields(df, title):
         ax.grid(True)
 
     axes[-1].set_xlabel(time_column)
-    fig.tight_layout()
+    fig.suptitle(title)
     plt.title(title)
     plt.show()
