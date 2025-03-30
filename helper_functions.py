@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 def to_datetime(df):
     # Create a mask for rows that contain AM or PM in the Time column
@@ -24,37 +25,46 @@ def to_datetime(df):
     
     return df
 
+
 def plot_all_fields(df, title):
     '''
-    Plots each non-time column in a vertical stack of subplots vs. the 'Datetime' column.
+    Plots each non-time column in a compact 3-column grid of subplots vs. the 'Datetime' column.
+    Subplot titles have extra space, x-labels are hidden, and y-ticks use smaller font.
     '''
     time_column = 'Datetime'
-
-    num_fields = df.shape[1] - 1  # Exclude time column
     fields = [col for col in df.columns if col != time_column]
+    num_fields = len(fields)
+
+    ncols = 5
+    nrows = math.ceil(num_fields / ncols)
+    height_per_row = 1  # very compact
 
     fig, axes = plt.subplots(
-        nrows=num_fields,
-        ncols=1,
-        figsize=(12, 0.9 * num_fields),  # Slightly taller per row
-        sharex=True
+        nrows=nrows,
+        ncols=ncols,
+        figsize=(15, height_per_row * nrows),
+        sharex=False
     )
 
-    # Ensure axes is always iterable
-    if num_fields == 1:
-        axes = [axes]
+    axes = axes.flatten()
 
-    for ax, field in zip(axes, fields):
+    for i, field in enumerate(fields):
+        ax = axes[i]
         ax.plot(df[time_column], df[field])
-        ax.set_title(field, fontsize=10)
-        ax.grid(True)
+        ax.set_title(field, fontsize=8, pad=8)  # pad=8 adds vertical space above plot
+        ax.tick_params(labelbottom=False, labelsize=7)  # remove x labels, shrink y ticks
 
-    axes[-1].set_xlabel(time_column)
+    # Hide unused axes
+    for j in range(len(fields), len(axes)):
+        fig.delaxes(axes[j])
 
-    fig.suptitle(title, fontsize=16)
-    fig.tight_layout(rect=[0, 0, 1, 0.98])  # Reserve space for suptitle
-    fig.subplots_adjust(hspace=0.5)  # Add vertical spacing between subplots
+    fig.suptitle(title, fontsize=14)
+    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    fig.subplots_adjust(hspace=0.75, wspace=0.4)  # More vertical space for titles
     plt.show()
+
+
+
 
 def get_relevant_fields(df):
 
@@ -65,7 +75,7 @@ def get_relevant_fields(df):
                     'EFG:EFG_Oxygen_Pressure_2.Value',
                     ###############################################################################
                     'Analyzer 2 CO2 %',                 # Is it worth keeping these extra analyzers?
-                    'Analyzer 2 CO %',                  # Tf they are just being kept because they
+                    #'Analyzer 2 CO %',broken           # Tf they are just being kept because they
                     'Analyzer 3 O2 %',                  # have errors than that is exactly what we
                     'Analyzer 3 CO2%',                  # want.
                     'ABB CH4',
