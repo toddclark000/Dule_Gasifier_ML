@@ -1,3 +1,5 @@
+import pandas as pd
+
 def to_datetime(df):
     # Create a mask for rows that contain AM or PM in the Time column
     mask_ampm = df['Time'].str.contains('AM|PM')
