@@ -99,3 +99,7 @@ def get_relevant_fields(df):
         df.rename(columns={'Moyno Flow Rate lb/hr': 'Slurry Flow Rate lb/hr'}, inplace=True)
     
     return df[column_filter]
+
+
+
+# fill missing
