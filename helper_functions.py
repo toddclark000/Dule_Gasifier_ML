@@ -1,7 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
+import numpy as np
+from datetime import datetime
+from datetime import timedelta
 
+
+####################################################### general purpose data frame wrangling help ###################################################################3 
 def to_datetime(df):
     # Create a mask for rows that contain AM or PM in the Time column
     mask_ampm = df['Time'].str.contains('AM|PM')
@@ -102,4 +107,114 @@ def get_relevant_fields(df):
 
 
 
-# fill missing
+
+####################################################################### test functions ############################################################################
+def test_nulls_and_zeros(df, field_name:str):
+    null_count = df[field_name].isnull().sum()
+    zero_count = (df[field_name] == 0).sum()
+    return {'null count': null_count, 'zero count': zero_count}
+
+def rmse(ground_truth_df, df_to_test, window_start:datetime=None, window_end:datetime=None ):
+    ''' 
+    1. Checks if all fields and times match up, Throws error if they dont
+    2. Calculates RMSE over time for all fields except "Datetime"
+    3. Returns dict with fields as keys and RMSE as values
+    '''
+    # check if fields match
+    if not ground_truth_df.columns.equals(df_to_test.columns):
+        raise ValueError("DataFRames have different columns")
+    
+    # check that dates line up
+    if not ground_truth_df["Datetime"].equals(df_to_test["Datetime"]):
+        raise ValueError("Dates do not match")
+    
+    # Apply window if given
+    if window_start is not None and window_end is not None:
+        mask = (ground_truth_df["Datetime"] >= window_start) & (ground_truth_df["Datetime"] <= window_end)
+        ground_truth_df = ground_truth_df[mask].copy()
+        df_to_test = df_to_test[mask].copy()
+    
+    # calculate RMSE
+    rmse_dict = {}
+    for col in ground_truth_df.columns:
+        # don't need rmse for Date
+        if col == 'Datetime':
+            continue
+
+        key = col
+        value = np.sqrt(np.mean((ground_truth_df[col].to_numpy() - df_to_test[col].to_numpy())**2))
+        rmse_dict[key] = value #populate dict with rmse
+
+    return rmse_dict
+
+def sMAPE(ground_truth_df, df_to_test, window_start:datetime=None, window_end:datetime=None ):
+    ''' 
+    1. Checks if all fields and times match up, Throws error if they dont
+    2. Calculates sMAPE over time for all fields except "Datetime"
+    3. Returns dict with fields as keys and RMSE as values
+
+    '''
+    # check if fields match
+    if not ground_truth_df.columns.equals(df_to_test.columns):
+        raise ValueError("DataFRames have different columns")
+    
+    # check that dates line up
+    if not ground_truth_df["Datetime"].equals(df_to_test["Datetime"]):
+        raise ValueError("Dates do not match")
+    
+    # Apply window if given
+    if window_start is not None and window_end is not None:
+        mask = (ground_truth_df["Datetime"] >= window_start) & (ground_truth_df["Datetime"] <= window_end)
+        ground_truth_df = ground_truth_df[mask].copy()
+        df_to_test = df_to_test[mask].copy()
+    
+    # calculate sMAPE
+    sMAPE_dict = {}
+    for col in ground_truth_df.columns:
+        # don't need rmse for Date
+        if col == 'Datetime':
+            continue
+
+        key = col
+        gt = ground_truth_df[col].to_numpy()
+        pre = df_to_test[col].to_numpy()
+
+        value = 100 * np.mean(2 * np.abs(pre -(gt)) / (np.abs(pre) + np.abs(gt)))
+        sMAPE_dict[key] = value #populate dict with sMAPE
+
+    return sMAPE_dict
+
+
+#################################################### functions to mess up original data so we can test our tool ##############################################
+def inject_missing_values(df, fields_to_inject_on:list, start_time:datetime, length:timedelta):
+    end_time = start_time + length
+    df = df.copy()
+    mask = (df['Datetime'] >= start_time) & (df['Datetime'] <= end_time)
+
+    for field in fields_to_inject_on:
+        df.loc[mask, field] = np.nan
+
+    return df
+
+def inject_zeros(df, fields_to_inject_on:list, start_time:datetime, length:timedelta):
+    end_time = start_time + length
+    df = df.copy()
+    mask = (df['Datetime'] >= start_time) & (df['Datetime'] <= end_time)
+
+    for field in fields_to_inject_on:
+        df.loc[mask, field] = 0
+
+def inject_noise(df, fields_to_inject_on: list, start_time: datetime, length: timedelta, noise_scale: float = 0.1):
+    '''
+    noise_scale is the % of the original value that the noise can change the original value
+    '''
+    end_time = start_time + length
+    df = df.copy()
+    mask = (df['Datetime'] >= start_time) & (df['Datetime'] <= end_time)
+
+    for field in fields_to_inject_on:
+        original_values = df.loc[mask, field]
+        noise = np.random.normal(loc=0.0, scale=noise_scale, size=original_values.shape)
+        df.loc[mask, field] = original_values * (1 + noise)
+
+    return df
