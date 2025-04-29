@@ -90,16 +90,16 @@ def get_relevant_fields(df):
                     # 'ABB CO2',
                     # 'ABB O2',
                     ###############################################################################
-                    'GB O2%',
+                    # 'GB O2%',
                     # 'GB CO2%',
                     'GB CO%',
                     # 'GB CH4%',
-                    # 'GB H2%',
+                    'GB H2%',
                     # 'GB C2H4%',
                     # 'GB C2H2%',
                     # 'GB LHV [MJ/Nm3]',
-                    # 'EFG:B_TC_1_Shallow.Value',
-                    'EFG:B_TC_4_Shallow.Value'
+                    'EFG:B_TC_1_Shallow.Value'
+                    # 'EFG:B_TC_4_Shallow.Value'
                     ]
     
     if 'Moyno Flow Rate lb/hr' in df.columns:
