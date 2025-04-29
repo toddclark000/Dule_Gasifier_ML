@@ -73,30 +73,32 @@ def plot_all_fields(df, title):
 
 def get_relevant_fields(df):
 
-    column_filter = ['Date', 'Time', 'EFG Air Flow Rate lb/hr', 'Primary O2 Flow Rate lb/hr',
-                    'EFG System Pressure psi',
-                    'Slurry Flow Rate lb/hr',
-                    'EFG:EFG_Oxygen_Pressure_1.Value',
-                    'EFG:EFG_Oxygen_Pressure_2.Value',
+    column_filter = [
+        'Date', 'Time',
+        #   'EFG Air Flow Rate lb/hr', 'Primary O2 Flow Rate lb/hr',
+        #             'EFG System Pressure psi',
+        #             'Slurry Flow Rate lb/hr',
+        #             'EFG:EFG_Oxygen_Pressure_1.Value',
+        #             'EFG:EFG_Oxygen_Pressure_2.Value',
                     ###############################################################################
-                    'Analyzer 2 CO2 %',                 # Is it worth keeping these extra analyzers?
-                    #'Analyzer 2 CO %',broken           # Tf they are just being kept because they
-                    'Analyzer 3 O2 %',                  # have errors than that is exactly what we
-                    'Analyzer 3 CO2%',                  # want.
-                    'ABB CH4',
-                    'ABB CO',
-                    'ABB CO2',
-                    'ABB O2',
+                    # 'Analyzer 2 CO2 %',                 # Is it worth keeping these extra analyzers?
+                    # #'Analyzer 2 CO %',broken           # Tf they are just being kept because they
+                    # 'Analyzer 3 O2 %',                  # have errors than that is exactly what we
+                    # 'Analyzer 3 CO2%',                  # want.
+                    # 'ABB CH4',
+                    # 'ABB CO',
+                    # 'ABB CO2',
+                    # 'ABB O2',
                     ###############################################################################
                     'GB O2%',
-                    'GB CO2%',
+                    # 'GB CO2%',
                     'GB CO%',
-                    'GB CH4%',
-                    'GB H2%',
-                    'GB C2H4%',
-                    'GB C2H2%',
-                    'GB LHV [MJ/Nm3]',
-                    'EFG:B_TC_1_Shallow.Value',
+                    # 'GB CH4%',
+                    # 'GB H2%',
+                    # 'GB C2H4%',
+                    # 'GB C2H2%',
+                    # 'GB LHV [MJ/Nm3]',
+                    # 'EFG:B_TC_1_Shallow.Value',
                     'EFG:B_TC_4_Shallow.Value'
                     ]
     
