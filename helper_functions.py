@@ -40,9 +40,9 @@ def plot_all_fields(df, title):
     fields = [col for col in df.columns if col != time_column]
     num_fields = len(fields)
 
-    ncols = 5
+    ncols = 3
     nrows = math.ceil(num_fields / ncols)
-    height_per_row = 1  # very compact
+    height_per_row = 3  # very compact
 
     fig, axes = plt.subplots(
         nrows=nrows,
@@ -95,7 +95,7 @@ def get_relevant_fields(df):
                     'GB CO%',
                     # 'GB CH4%',
                     'GB H2%',
-                    # 'GB C2H4%',
+                    # 'GB C2H6%',
                     # 'GB C2H2%',
                     # 'GB LHV [MJ/Nm3]',
                     'EFG:B_TC_1_Shallow.Value'
